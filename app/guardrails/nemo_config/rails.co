@@ -1,0 +1,19 @@
+define user express greeting
+  "hello"
+  "hi"
+  "hey"
+
+define bot refuse blocked
+  "I can't help with that."
+
+define flow self check input
+  $allowed = execute self_check_input
+  if not $allowed
+    bot refuse blocked
+    stop
+
+define flow self check output
+  $allowed = execute self_check_output
+  if not $allowed
+    bot refuse blocked
+    stop
