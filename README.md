@@ -34,7 +34,7 @@ app/
   info to build the LLM context. `/chat` filters global search results down to a single
   paper by `paper_id`.
 
-## 2. Multi-paper upload (`POST /upload`)
+## 2. Multi-paper upload
 
 `/upload` accepts **1 to 3** PDF files (`MAX_UPLOAD_FILES` in `.env`, default 3) in a
 single multipart request. Each PDF is processed **fully and independently** -- hash
@@ -101,7 +101,7 @@ Output: Groq -> NeMo Guardrails -> Microsoft Presidio -> Regex validation
   the app) if the `nemoguardrails` package or its dependent LLM call is unavailable,
   so the regex + Presidio stages remain the enforced baseline in that case.
 
-## 5. Session-based conversational memory (`POST /chat`)
+## 5. Session-based conversational memory
 
 `/chat` supports ChatGPT-style multi-turn conversations scoped to a single uploaded
 paper:
@@ -168,22 +168,10 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 Open **http://localhost:8000/docs** for the interactive Swagger UI -- every endpoint
 listed below is fully usable from there, including file upload.
 
-## 7. API Endpoints
 
-| Method | Path         | Description                                              |
-|--------|--------------|------------------------------------------------------------|
-| POST   | `/upload`    | Upload 1-3 PDFs; returns per-paper summary/profile/gap, plus a combined summary if the papers are related |
-| POST   | `/chat`      | Session-based RAG chat with an uploaded paper (by `paper_id` = sha256) |
-| POST   | `/search`    | Search Semantic Scholar, OpenAlex, Crossref, arXiv        |
-| POST   | `/compare`   | Compare 2+ uploaded papers using cached structured data   |
-| POST   | `/gap`       | Structured research-gap analysis (+ optional related work)|
-| GET    | `/analytics` | Token usage, latency, and estimated cost across all calls |
-| GET    | `/health`    | Health check                                               |
 
-`paper_id` in `/chat`, `/compare`, and `/gap` is the SHA-256 hash returned by
-`/upload` (also called `sha256` in the upload response).
 
-## 8. Notes on optional heavy dependencies
+## 7. Notes on optional heavy dependencies
 
 - **PaddleOCR** is included in `requirements.txt` for future image/scanned-PDF
   support as specified, but the current `/upload` pipeline uses PyMuPDF text
@@ -195,7 +183,7 @@ listed below is fully usable from there, including file upload.
 - **Presidio** requires a spaCy model (`en_core_web_lg` recommended, `en_core_web_sm`
   also works with lower accuracy). Install per the command above.
 
-## 9. Project conventions
+## 8. Project conventions
 
 - All business logic lives in `services/`; `api/` routers only validate input,
   call a service, and map exceptions to HTTP responses.
