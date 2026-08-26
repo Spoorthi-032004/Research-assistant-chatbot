@@ -145,8 +145,8 @@ paper:
 - A [Groq API key](https://console.groq.com)
 
 ### MongoDB Setup
-The application uses MongoDB to store AI-generated paper results and chat session
-history.MongoDB can be run locally or through MongoDB Atlas.
+The application uses MongoDB to store AI-generated paper results and chat session history. MongoDB can be run locally or through MongoDB Atlas.
+
 -For a local MongoDB installation, make sure the MongoDB service is running and use:
 '''env
 MONGO_URI=mongodb://localhost:27017
