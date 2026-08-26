@@ -10,7 +10,7 @@ motor==3.6.0
 pymongo==4.9.2
 
 # --- Vector search ---
-faiss-cpu==1.9.0
+faiss-cpu
 numpy==1.26.4
 
 # --- Embeddings ---
@@ -21,17 +21,17 @@ torch==2.5.1
 PyMuPDF==1.24.14
 
 # --- OCR (future image support) ---
-paddlepaddle==2.6.2
+paddlepaddle
 paddleocr==2.9.1
 
 # --- Guardrails ---
 presidio-analyzer==2.2.358
 presidio-anonymizer==2.2.358
 spacy==3.7.5
-nemoguardrails==0.11.1
+nemoguardrails
 
 # --- LLM / HTTP ---
-httpx==0.27.2
+httpx
 
 # --- Token counting ---
 tiktoken==0.8.0
