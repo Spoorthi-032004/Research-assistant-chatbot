@@ -148,9 +148,9 @@ paper:
 The application uses MongoDB to store AI-generated paper results and chat session history. MongoDB can be run locally or through MongoDB Atlas.
 
 -For a local MongoDB installation, make sure the MongoDB service is running and use:
-'''env
+```env
 MONGO_URI=mongodb://localhost:27017
-
+```
 -For MongoDB Atlas, create a cluster, create a database user, allow the required
 network access, and use the Atlas connection string as MONGO_URI in the .env
 file.
