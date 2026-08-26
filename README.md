@@ -4,7 +4,8 @@ A production-ready, CPU-only FastAPI backend for uploading, chatting with, searc
 comparing, and analyzing research papers -- built to minimize LLM API usage through
 caching, duplicate detection, and consolidated (single-call) analysis prompts.
 
-No frontend is included. Every capability is exposed through **Swagger UI** at `/docs`.
+A Streamlit frontend is included in streamlit_app.py for interacting with the
+backend through a web interface. Every capability is exposed through **Swagger UI** at `/docs`.
 
 ---
 
@@ -143,11 +144,22 @@ paper:
 - A running MongoDB instance (local or Atlas)
 - A [Groq API key](https://console.groq.com)
 
+### MongoDB Setup
+The application uses MongoDB to store AI-generated paper results and chat session
+history.MongoDB can be run locally or through MongoDB Atlas.
+-For a local MongoDB installation, make sure the MongoDB service is running and use:
+'''env
+MONGO_URI=mongodb://localhost:27017
+
+-For MongoDB Atlas, create a cluster, create a database user, allow the required
+network access, and use the Atlas connection string as MONGO_URI in the .env
+file.
+
 ### Install
 
 ```bash
 python -m venv .venv
-source .venv/bin/activate          # Windows: .venv\Scripts\activate
+Windows: .venv\Scripts\activate          # macOSor Linux: source .venv/bin/activate
 pip install -r requirements.txt
 python -m spacy download en_core_web_lg   # required by Presidio's NLP engine
 ```
@@ -158,9 +170,17 @@ python -m spacy download en_core_web_lg   # required by Presidio's NLP engine
 cp .env.example .env
 # then edit .env and set GROQ_API_KEY, MONGO_URI, etc.
 ```
+Create a .env file in the project root and configure the required values:
+```env
+GROQ_API_KEY=your_groq_api_key
+MONGO_URI=mongodb://localhost:27017
+MONGO_DB_NAME=research_assistant
+ENABLE_NEMO_GUARDRAILS=false
+```
+For MongoDB Atlas, replace MONGO_URI with the Atlas connection string.
 
-### Run
 
+### Run the Backend
 ```bash
 uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
@@ -168,10 +188,30 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 Open **http://localhost:8000/docs** for the interactive Swagger UI -- every endpoint
 listed below is fully usable from there, including file upload.
 
+### Run the Streamlit Frontend
+Keep the FastAPI backend running on port 8000.
+Open a new terminal, activate the same virtual environment, and run:
+```bash
+streamlit run streamlit_app.py
+```
+The Streamlit frontend will be available at: **http://localhost:8501**
 
+## 7. Environment Variables
 
+The main configuration values are loaded from .env. Important settings include:
 
-## 7. Notes on optional heavy dependencies
+- GROQ_API_KEY -- API key used for LLM requests.
+- MONGO_URI -- MongoDB connection string.
+- MONGO_DB_NAME -- MongoDB database name.
+- ENABLE_NEMO_GUARDRAILS -- Enables or disables NeMo Guardrails.
+- MAX_UPLOAD_FILES -- Maximum number of PDFs accepted per upload (default: 3).
+- PAPER_SIMILARITY_THRESHOLD -- Threshold used to determine whether uploaded papers are related (default: 0.80).
+- CHUNK_SIZE_TOKENS -- RAG chunk size (default: 500).
+- CHUNK_OVERLAP_TOKENS -- Chunk overlap (default: 60).
+- TOP_K_RETRIEVAL -- Number of relevant chunks retrieved for chat (default: 5).
+- MAX_CHAT_HISTORY_EXCHANGES -- Maximum conversation history retained for LLM requests (default: 12).
+
+## 8. Notes on optional heavy dependencies
 
 - **PaddleOCR** is included in `requirements.txt` for future image/scanned-PDF
   support as specified, but the current `/upload` pipeline uses PyMuPDF text
@@ -183,7 +223,7 @@ listed below is fully usable from there, including file upload.
 - **Presidio** requires a spaCy model (`en_core_web_lg` recommended, `en_core_web_sm`
   also works with lower accuracy). Install per the command above.
 
-## 8. Project conventions
+## 9. Project conventions
 
 - All business logic lives in `services/`; `api/` routers only validate input,
   call a service, and map exceptions to HTTP responses.
